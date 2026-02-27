@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Data.SqlClient;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// JWT Authentication — replaces authenticateToken middleware
+// JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -20,13 +21,12 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey         = new SymmetricSecurityKey(
                                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)
                                    ),
-        ValidateIssuer           = false,  // set to true if you added an issuer in AuthController
-        ValidateAudience         = false,  // set to true if you added an audience in AuthController
-        ValidateLifetime         = true,   // rejects expired tokens — equivalent to jwt.verify catching expiry
-        ClockSkew                = TimeSpan.Zero // no grace period on expiry
+        ValidateIssuer           = false,
+        ValidateAudience         = false,
+        ValidateLifetime         = true,
+        ClockSkew                = TimeSpan.Zero
     };
 
-    // Mirrors your console.log("HEADERS:", req.headers.authorization)
     options.Events = new JwtBearerEvents
     {
         OnAuthenticationFailed = context =>
@@ -45,22 +45,54 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// CORS — allows your React frontend to connect
+// CORS — fully mirrors your Express cors() config
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
         policy.WithOrigins(builder.Configuration["AllowedOrigin"] ?? "http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+              .WithMethods("GET", "POST", "PUT", "DELETE")
+              .WithHeaders("Content-Type", "Authorization");
     });
 });
 
 var app = builder.Build();
 
 app.UseCors("AllowReact");
-app.UseAuthentication(); // must come before UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// Mirrors: app.get("/", (req, res) => res.send("Backend is running!"))
+app.MapGet("/", () => "Backend is running!");
+
+// Mirrors: app.get("/test-db", async (req, res) => { ... })
+app.MapGet("/test-db", async (context) =>
+{
+    var config           = context.RequestServices.GetRequiredService<IConfiguration>();
+    var connectionString = config.GetConnectionString("DefaultConnection")!;
+
+    try
+    {
+        await using var conn = new SqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        await using var cmd    = new SqlCommand("SELECT GETDATE() AS CurrentTime", conn);
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            var currentTime = reader.GetDateTime(reader.GetOrdinal("CurrentTime"));
+            await context.Response.WriteAsJsonAsync(new[] { new { currentTime } });
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(ex);
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("DB error");
+    }
+});
+
+Console.WriteLine("Server running on port 5000");
 app.Run();
