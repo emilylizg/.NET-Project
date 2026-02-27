@@ -1,0 +1,51 @@
+.register {
+  text-align: center;
+  margin: 40px auto;
+  max-width: 400px;
+  background-color: #BAC095;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.register h2 {
+  color: #3D4127;
+  margin-bottom: 20px;
+}
+
+.register input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  border: 1px solid #636B2F;
+  border-radius: 6px;
+}
+
+.register button {
+  background-color: #636B2F;
+  color: #D4DE95;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.register button:hover {
+  background-color: #3D4127;
+}
+.login-link {
+  margin-top: 15px;
+  color: #3D4127;
+}
+
+.login-link a {
+  color: #636B2F;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link a:hover {
+  color: #3D4127;
+  text-decoration: underline;
+}

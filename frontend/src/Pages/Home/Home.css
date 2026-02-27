@@ -1,0 +1,21 @@
+/* Home.css */
+.home {
+  text-align: center;
+}
+.home-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+button {
+  background-color: #636B2F;
+  color: #D4DE95;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #3D4127;
+}

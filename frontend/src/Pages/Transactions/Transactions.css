@@ -1,0 +1,35 @@
+.transactions-page {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #F5F5F0;
+  border-radius: 8px;
+}
+
+.transactions-page h1 {
+  text-align: center;
+  color: #3D4127;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

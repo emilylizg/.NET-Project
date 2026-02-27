@@ -1,0 +1,32 @@
+/* SummaryBlocks.css */
+.summary-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.block {
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 2px solid #3D4127;
+}
+.block:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.income {
+  background-color: #BAC095;
+  color: #3D4127;
+}
+.expense {
+  background-color: #D4DE95;
+  color: #3D4127;
+}
+.savings {
+  background-color: #BAC095;
+  color: #3D4127;
+}
